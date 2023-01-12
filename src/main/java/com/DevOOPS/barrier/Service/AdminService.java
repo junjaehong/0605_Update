@@ -3,10 +3,11 @@ package com.DevOOPS.barrier.Service;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Mapper.AdminMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,16 +21,17 @@ public class AdminService {
     ReportAPIdto reportAPIdto;
     @Autowired
     AdminMapper mapper;
-        public void createAdmin(dto dt) {
-            mapper.createAdmin(dt);
-        }
 
-        public void deleteAdmin(String adminId) {
-            dt.getAdminId().equals(adminId);
-            mapper.deleteAdmin(adminId);
-        }
+    public void createAdmin(dto dt) {
+        mapper.createAdmin(dt);
+    }
 
-    public String load_save(){
+    public void deleteAdmin(String adminId) {
+        dt.getAdminId().equals(adminId);
+        mapper.deleteAdmin(adminId);
+    }
+
+    public void load_save() {
         String result = "";
 
         try {
@@ -46,15 +48,36 @@ public class AdminService {
             HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
             urlConn.setRequestMethod("GET");
             urlConn.setRequestProperty("Content-type", "application/json");
+            urlConn.setRequestProperty("Content-type", "application/json");
             System.out.println("Response Code : " + urlConn.getResponseCode());
-
             BufferedReader bf;
             bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            result = bf.readLine();
 
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+            JSONObject response = (JSONObject) jsonObject.get("response");
+            JSONObject body = (JSONObject) response.get("body");
+            JSONObject items = (JSONObject) body.get("items");
+            JSONArray infoArr = (JSONArray) items.get("item");
 
-        }catch(Exception e) {
+            /*
+            {"response":{"header":{"resultCode":"00","resultMsg":"NORMAL_SERVICE"},
+                "body":{"dataType":"JSON","items":{"item":[
+                    {"stnId":"184","title":"[특보] 제01-3호 : 2023.01.03.16:00 / 풍랑주의보 해제 (*)","tmFc":202301031600,"tmSeq":3},
+                    {"stnId":"184","title":"[특보] 제01-2호 : 2023.01.03.14:00 / 풍랑주의보 해제 (*)","tmFc":202301031400,"tmSeq":2},
+                    {"stnId":"184","title":"[특보] 제01-1호 : 2023.01.02.20:30 / 풍랑주의보 발표(*)","tmFc":202301022030,"tmSeq":1} ] }
+                    ,"pageNo":1,"numOfRows":10,"totalCount":3}}}
+             */
+
+            for (int i = 0; i < infoArr.size(); i++) {
+                JSONObject tmp = (JSONObject) infoArr.get(i);
+                ReportAPIdto infoObj = new ReportAPIdto(i + 1, (int) tmp.get("stnId"),
+                        (String) tmp.get("title"), (String) tmp.get("tmFc"), (int) tmp.get("tmSeq"));
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/findname";
     }
 }
