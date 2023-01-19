@@ -3,6 +3,7 @@ package com.DevOOPS.barrier.Service;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Mapper.AdminMapper;
+import com.DevOOPS.barrier.Repository.ReportAPIRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -69,13 +70,13 @@ public class AdminService {
                     {"stnId":"184","title":"[특보] 제01-1호 : 2023.01.02.20:30 / 풍랑주의보 발표(*)","tmFc":202301022030,"tmSeq":1} ] }
                     ,"pageNo":1,"numOfRows":10,"totalCount":3}}}
              */
-
+            ReportAPIRepository infoRepository = null;
             for (int i = 0; i < infoArr.size(); i++) {
                 JSONObject tmp = (JSONObject) infoArr.get(i);
                 ReportAPIdto infoObj = new ReportAPIdto(i + 1, (int) tmp.get("stnId"),
                         (String) tmp.get("title"), (String) tmp.get("tmFc"), (int) tmp.get("tmSeq"));
+                        infoRepository.save(infoObj);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

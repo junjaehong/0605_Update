@@ -32,13 +32,16 @@ public class AdminController {
 
         return "redirect:/";
     }
-
-    @RequestMapping(value = "/api", method = RequestMethod.GET)
-    public String getReportAPI() { return "ReportAPI"; }
+//
+//    @RequestMapping(value = "/api", method = RequestMethod.GET)
+//    public String getReportAPI() { return "ReportAPI"; }
 
     @RequestMapping(value = "/api", method = RequestMethod.POST)
     public String postReportAPI(ReportAPIdto reportAPIdto) {
         adminService.load_save();
+
+        JSONArray tempArr;
+        
 
         return "redirect:/";
     }
