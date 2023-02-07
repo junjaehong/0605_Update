@@ -22,29 +22,27 @@ import java.net.URLEncoder;
 @Controller
 @Slf4j
 public class AdminController {
-    @Autowired
+//    @Autowired
     AdminService adminService;
-    @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public String getSignUp() {
-        return "signup";
-    }
-
-    @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String postSignUp(dto dt) {
-        adminService.createAdmin(dt);
-    }
+//
+//    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+//    public String getSignUp() {
+//        return "signup";
+//    }
+//
+//    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+//    public void postSignUp(dto dt) {
+//        adminService.createAdmin(dt);
+//
+//    }
 //
 //    @RequestMapping(value = "/api", method = RequestMethod.GET)
 //    public String getReportAPI() { return "ReportAPI"; }
 
-    @RequestMapping(value = "/api", method = RequestMethod.POST)
-    public String postReportAPI(@Param(ReportAPIdto)) {
+    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    public String postReportAPI() {
         adminService.load_save();
+        return "api";
 
-        JSONArray tempArr;
-        
-
-        return "redirect:/";
     }
-
 }

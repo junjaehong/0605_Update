@@ -3,13 +3,14 @@ package com.DevOOPS.barrier.Service;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Mapper.AdminMapper;
-import com.DevOOPS.barrier.Repository.ReportAPIRepository;
+import org.apache.ibatis.session.SqlSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -20,13 +21,15 @@ import java.net.URLEncoder;
 public class AdminService {
     dto dt;
     ReportAPIdto reportAPIdto;
+
+    @Resource(name = "sqlSessionTemplate")
+    private SqlSession session;
     @Autowired
     AdminMapper mapper;
 
     public void createAdmin(dto dt) {
         mapper.createAdmin(dt);
     }
-
     public void deleteAdmin(String adminId) {
         dt.getAdminId().equals(adminId);
         mapper.deleteAdmin(adminId);
@@ -62,6 +65,18 @@ public class AdminService {
             JSONObject items = (JSONObject) body.get("items");
             JSONArray infoArr = (JSONArray) items.get("item");
 
+            for(int i=0; i<infoArr.size(); i++) {
+                JSONObject tmp = (JSONObject) infoArr.get(i);
+                int stnId = (int) tmp.get("stnId");
+                String title = (String) tmp.get("title");
+                String tmFc = (String) tmp.get("tmFc");
+                int tmSeq = (int) tmp.get("tmSeq");
+                ReportAPIdto reportAPIdto1 = new ReportAPIdto(i, stnId, title, tmFc, tmSeq);
+                mapper.ReportAPICall(reportAPIdto1);
+
+                System.out.println(reportAPIdto1.getTitle());
+            }
+
             /*
             {"response":{"header":{"resultCode":"00","resultMsg":"NORMAL_SERVICE"},
                 "body":{"dataType":"JSON","items":{"item":[
@@ -70,13 +85,7 @@ public class AdminService {
                     {"stnId":"184","title":"[특보] 제01-1호 : 2023.01.02.20:30 / 풍랑주의보 발표(*)","tmFc":202301022030,"tmSeq":1} ] }
                     ,"pageNo":1,"numOfRows":10,"totalCount":3}}}
              */
-            ReportAPIRepository infoRepository = null;
-            for (int i = 0; i < infoArr.size(); i++) {
-                JSONObject tmp = (JSONObject) infoArr.get(i);
-                ReportAPIdto infoObj = new ReportAPIdto(i + 1, (int) tmp.get("stnId"),
-                        (String) tmp.get("title"), (String) tmp.get("tmFc"), (int) tmp.get("tmSeq"));
-                        infoRepository.save(infoObj);
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
