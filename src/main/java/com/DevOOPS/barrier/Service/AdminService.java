@@ -3,14 +3,13 @@ package com.DevOOPS.barrier.Service;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Mapper.AdminMapper;
-import org.apache.ibatis.session.SqlSession;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -18,14 +17,15 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 @Service //Bean에 등록하는 annotation. 기본으로 싱글톤으로 등록한다 (유일하게 하나만 등록해서 공유한다)
+@Slf4j
 public class AdminService {
     dto dt;
     ReportAPIdto reportAPIdto;
-
-    @Resource(name = "sqlSessionTemplate")
-    private SqlSession session;
     @Autowired
     AdminMapper mapper;
+
+    @Value("{api.key}")
+    private String ServiceKey;
 
     public void createAdmin(dto dt) {
         mapper.createAdmin(dt);
@@ -35,18 +35,19 @@ public class AdminService {
         mapper.deleteAdmin(adminId);
     }
 
-    public void load_save() {
+    public void load_save(String tmTo, String tmFrom) {
         String result = "";
-
+        //서비스키(application.property (annotation @Value?) 안에서 불러오는 방식), 날짜를 컨트롤러에서 보내주는 형식으로. (fromTmFc, toTmFc)
         try {
+
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/WthrWrnInfoService/getWthrWrnList"); /*URL*/
-            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=ZOlFTGkmROJNVFtNDfM1I/Aaz9ZVpHV2POFwiFTtFNTUjXoS75Vuo9Yv9/uVAjntDDNApLwjlbIn7b36Dj9g9Q=="); /*Service Key*/
+            urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + ServiceKey); /*Service Key*/
             urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
             urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8")); /*한 페이지 결과 수*/
             urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON)Default: XML*/
             urlBuilder.append("&" + URLEncoder.encode("stnId", "UTF-8") + "=" + URLEncoder.encode("184", "UTF-8")); /*지점코드 *하단 지점코드 자료 참조*/
-            urlBuilder.append("&" + URLEncoder.encode("fromTmFc", "UTF-8") + "=" + URLEncoder.encode("20221231", "UTF-8")); /*시간(년월일)(데이터 생성주기 : 시간단위로 생성)*/
-            urlBuilder.append("&" + URLEncoder.encode("toTmFc", "UTF-8") + "=" + URLEncoder.encode("20230103", "UTF-8")); /*시간(년월일) (데이터 생성주기 : 시간단위로 생성)*/
+            urlBuilder.append("&" + URLEncoder.encode("fromTmFc", "UTF-8") + "=" + URLEncoder.encode(tmTo, "UTF-8")); /*시간(년월일)(데이터 생성주기 : 시간단위로 생성)*/
+            urlBuilder.append("&" + URLEncoder.encode("toTmFc", "UTF-8") + "=" + URLEncoder.encode(tmFrom, "UTF-8")); /*시간(년월일) (데이터 생성주기 : 시간단위로 생성)*/
             URL url = new URL(urlBuilder.toString());
 
             HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
@@ -59,24 +60,28 @@ public class AdminService {
             result = bf.readLine();
 
             JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(result); //하나씩 출력. Parsing 문제.
             JSONObject response = (JSONObject) jsonObject.get("response");
+                String responseResult = (String)response.get("header");
+                log.info(responseResult); //로그 콘솔 출력.
             JSONObject body = (JSONObject) response.get("body");
+                String bodyResult = (String)body.get("items");
+                log.info(bodyResult);
             JSONObject items = (JSONObject) body.get("items");
+                String itemResult = (String)items.get("title");
+                log.info(itemResult);
             JSONArray infoArr = (JSONArray) items.get("item");
 
-            for(int i=0; i<infoArr.size(); i++) {
+
+            for(int i=0; i<infoArr.size(); i++) { //for each으로 변경 고려.
                 JSONObject tmp = (JSONObject) infoArr.get(i);
                 int stnId = (int) tmp.get("stnId");
                 String title = (String) tmp.get("title");
                 String tmFc = (String) tmp.get("tmFc");
                 int tmSeq = (int) tmp.get("tmSeq");
-                ReportAPIdto reportAPIdto1 = new ReportAPIdto(i, stnId, title, tmFc, tmSeq);
+                ReportAPIdto reportAPIdto1 = new ReportAPIdto(i, stnId, title, tmFc, tmSeq); //DAO로 변경. (패키지 새로 생성)
                 mapper.ReportAPICall(reportAPIdto1);
-
-                System.out.println(reportAPIdto1.getTitle());
             }
-
             /*
             {"response":{"header":{"resultCode":"00","resultMsg":"NORMAL_SERVICE"},
                 "body":{"dataType":"JSON","items":{"item":[
@@ -87,7 +92,12 @@ public class AdminService {
              */
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // printstackTrace 필요 없음, 로그(Warning, Error)
+            // printstackTrace 필요 없음, 로그(Warning, Error)
+            // 출력해야 함. 테스트 코드 작성 해서 exception마다 처리해야 함.
         }
     }
+//기상 특보 내용 분석. 태풍 여부 분석 (이 파일 안에 함수를 추가해야함)
 }
+
+

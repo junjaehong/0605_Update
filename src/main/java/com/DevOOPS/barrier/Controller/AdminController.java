@@ -22,7 +22,7 @@ import java.net.URLEncoder;
 @Controller
 @Slf4j
 public class AdminController {
-//    @Autowired
+    @Autowired
     AdminService adminService;
 //
 //    @RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -41,8 +41,10 @@ public class AdminController {
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public String postReportAPI() {
-        adminService.load_save();
-        return "api";
+        String tmTo = "20221231";
+        String tmFrom = "20230103";
+        adminService.load_save(tmTo, tmFrom);
+        return "api"; //Status http 통신 코드 받아서 "안내문" 출력.
 
     }
 }
