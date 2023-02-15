@@ -27,6 +27,15 @@ public class AdminService {
     @Value("{api.key}")
     private String ServiceKey;
 
+    JSONObject jsonObject;
+    JSONObject response;
+    String responseResult;
+    JSONObject body;
+    String bodyResult;
+    JSONObject items;
+    String itemResult;
+    JSONArray infoArr;
+
     public void createAdmin(dto dt) {
         mapper.createAdmin(dt);
     }
@@ -37,7 +46,6 @@ public class AdminService {
 
     public void load_save(String tmTo, String tmFrom) {
         String result = "";
-        //서비스키(application.property (annotation @Value?) 안에서 불러오는 방식), 날짜를 컨트롤러에서 보내주는 형식으로. (fromTmFc, toTmFc)
         try {
 
             StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/WthrWrnInfoService/getWthrWrnList"); /*URL*/
@@ -60,17 +68,17 @@ public class AdminService {
             result = bf.readLine();
 
             JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(result); //하나씩 출력. Parsing 문제.
-            JSONObject response = (JSONObject) jsonObject.get("response");
-                String responseResult = (String)response.get("header");
+             jsonObject = (JSONObject) jsonParser.parse(result); //하나씩 출력. Parsing 문제.
+             response = (JSONObject) jsonObject.get("response");
+                 responseResult = (String)response.get("header");
                 log.info(responseResult); //로그 콘솔 출력.
-            JSONObject body = (JSONObject) response.get("body");
-                String bodyResult = (String)body.get("items");
+             body = (JSONObject) response.get("body");
+                 bodyResult = (String)body.get("items");
                 log.info(bodyResult);
-            JSONObject items = (JSONObject) body.get("items");
-                String itemResult = (String)items.get("title");
+             items = (JSONObject) body.get("items");
+                 itemResult = (String)items.get("title");
                 log.info(itemResult);
-            JSONArray infoArr = (JSONArray) items.get("item");
+             infoArr = (JSONArray) items.get("item");
 
 
             for(int i=0; i<infoArr.size(); i++) { //for each으로 변경 고려.
@@ -93,8 +101,20 @@ public class AdminService {
 
         } catch (Exception e) {
             // printstackTrace 필요 없음, 로그(Warning, Error)
-            // printstackTrace 필요 없음, 로그(Warning, Error)
             // 출력해야 함. 테스트 코드 작성 해서 exception마다 처리해야 함.
+        }
+    }
+
+    public void TyphoonAnalyzed() {
+        for (int j=0; j<infoArr.size(); j++) {
+            JSONObject tmp = (JSONObject) infoArr.get(j);
+            String title = (String) tmp.get("title");
+            String word = null;
+            int TyphoonAnalyzed = 0; //태풍 주의보 : 1, 태풍 특보 : 2, 특보 구문 분석 후 숫자 코드 추가할 예정.
+            switch (word){
+                case "태풍주의보" : TyphoonAnalyzed = 1;
+                case "태풍특보" : TyphoonAnalyzed = 2;
+            }
         }
     }
 //기상 특보 내용 분석. 태풍 여부 분석 (이 파일 안에 함수를 추가해야함)
