@@ -1,6 +1,7 @@
 package com.DevOOPS.barrier.Domain;
 
 public class ReportAPIDomain {
+
         private int idx;
         private int stnId;
         private String title;

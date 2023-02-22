@@ -2,6 +2,7 @@ package com.DevOOPS.barrier.Controller;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Service.AdminService;
+import com.DevOOPS.barrier.Status.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.parser.JSONParser;
 import org.apache.ibatis.annotations.Param;
@@ -19,8 +20,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-@Controller
+@RestController
 @Slf4j
+@RequestMapping(value = "/api")
+
 public class AdminController {
     @Autowired
     AdminService adminService;
@@ -39,12 +42,16 @@ public class AdminController {
 //    @RequestMapping(value = "/api", method = RequestMethod.GET)
 //    public String getReportAPI() { return "ReportAPI"; }
 
-    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    @GetMapping("/load")
     public String postReportAPI() {
-        String tmTo = "20221231";
-        String tmFrom = "20230103";
-        adminService.load_save(tmTo, tmFrom);
-        return "api"; //Status http 통신 코드 받아서 "안내문" 출력.
-
+        String tmTo = "20230220";
+        String tmFrom = "20230223";
+        int HttpStatus;
+        log.info("asdf");
+        HttpStatus = adminService.load_save(tmTo, tmFrom);
+//        adminService.TyphoonAnalyzed();
+        log.info(String.valueOf(HttpStatus));
+        return "api"; //http status 통신 코드 받아서 "안내문" 출력.
+        //StatusEnum, message 추가
     }
 }
