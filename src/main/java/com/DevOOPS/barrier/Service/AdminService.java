@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+
 //private과 protected과 public 구분해야 함.
 @Service //Bean에 등록하는 annotation. 기본으로 싱글톤으로 등록한다 (유일하게 하나만 등록해서 공유한다)
 @Slf4j
@@ -29,14 +30,6 @@ public class AdminService {
     @Value("${api.key}")
     private String ServiceKey;
 
-    JSONObject jsonObject;
-    JSONObject response;
-    String responseResult;
-    JSONObject body;
-    String bodyResult;
-    JSONObject items;
-    String itemResult;
-    JSONArray infoArr;
 
     public void createAdmin(dto dt) {
         mapper.createAdmin(dt);
@@ -81,33 +74,14 @@ public class AdminService {
             urlConn.disconnect();
             System.out.println(sb.toString());
 
-            //Domain
-            JSONParser jsonParser = new JSONParser(); //오류 해결해야 함.
-             jsonObject = (JSONObject) jsonParser.parse(line); //하나씩 출력. Parsing 문제.
-             response = (JSONObject) jsonObject.get("response");
-                 responseResult = (String)response.get("body");
-                log.info(responseResult); //로그 콘솔 출력.
-             body = (JSONObject) response.get("body");
-                 bodyResult = (String)body.get("items");
-                log.info(bodyResult);
-             items = (JSONObject) body.get("items");
-                 itemResult = (String)items.get("title");
-                log.info(itemResult);
-             infoArr = (JSONArray) items.get("item");
-
             //Unexpected character (<) at position 0. Parsing Error 해결해야 함.
             //오류(HttpStatus) 뜨면 오류 안내 페이지로
 
-
-            for(int i=0; i<infoArr.size(); i++) { //for each으로 변경 고려.
-                JSONObject tmp = (JSONObject) infoArr.get(i);
                 int stnId = (int) tmp.get("stnId");
                 String title = (String) tmp.get("title");
                 String tmFc = (String) tmp.get("tmFc");
                 int tmSeq = (int) tmp.get("tmSeq");
-                ReportAPIdto reportAPIdto1 = new ReportAPIdto(i, stnId, title, tmFc, tmSeq);
-                mapper.ReportAPICall(reportAPIdto1);
-            }
+
             /*
             {"response":{"header":{"resultCode":"00","resultMsg":"NORMAL_SERVICE"},
                 "body":{"dataType":"JSON","items":{"item":[
@@ -148,8 +122,6 @@ public class AdminService {
             else {
                 log.info("태풍이 발생하지 않았습니다.");
             }
-        }
-    }
-}
+
 
 

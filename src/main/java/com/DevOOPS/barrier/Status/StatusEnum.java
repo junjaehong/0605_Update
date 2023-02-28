@@ -1,5 +1,6 @@
 package com.DevOOPS.barrier.Status;
 
+
 public enum StatusEnum {
 
     OK(200, "OK"),
@@ -14,5 +15,6 @@ public enum StatusEnum {
         this.statusCode = statusCode;
         this.code = code;
     }
+
 
 }
