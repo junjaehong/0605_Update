@@ -2,7 +2,6 @@ package com.DevOOPS.barrier.Controller;
 import com.DevOOPS.barrier.DTO.ReportAPIdto;
 import com.DevOOPS.barrier.DTO.dto;
 import com.DevOOPS.barrier.Service.AdminService;
-import com.DevOOPS.barrier.Service.TyphoonService;
 import com.DevOOPS.barrier.Status.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.parser.JSONParser;
@@ -28,8 +27,6 @@ import java.net.URLEncoder;
 public class AdminController {
     @Autowired
     AdminService adminService;
-    @Autowired  //자동으로 생성
-    TyphoonService typhoonService;
 //
 //    @RequestMapping(value = "/signup", method = RequestMethod.GET)
 //    public String getSignUp() {
@@ -44,44 +41,5 @@ public class AdminController {
 //
 //    @RequestMapping(value = "/api", method = RequestMethod.GET)
 //    public String getReportAPI() { return "ReportAPI"; }
-
-    @GetMapping("/load")
-    public void postReportAPI() {
-        String tmTo = "20230223";
-        String tmFrom = "20230224";
-        int HttpStatus;
-
-        tmTo = String.valueOf(adminService.ServerTime() - 3);
-        tmFrom = String.valueOf(adminService.ServerTime());
-
-        log.info(tmTo + ", " + tmFrom);
-
-        HttpStatus = adminService.load_save(tmTo, tmFrom);
-//        adminService.TyphoonAnalyzed();
-        log.info(String.valueOf(HttpStatus));
-
-        String StatusMessage = StatusEnum.of(HttpStatus).getCode();
-        log.info(StatusMessage);
-    }
-
-    @GetMapping("/typhoon")
-    public void typhoonAPI() {
-        String typtmTo = "20230223";
-        String typFrom = "20230224";
-        int HttpStatus;
-
-        typtmTo = String.valueOf(typhoonService.ServerTime() - 3);
-        typFrom = String.valueOf(typhoonService.ServerTime());
-
-        log.info(typtmTo + ", " + typFrom);
-
-        HttpStatus = typhoonService.load_Typhoon(typtmTo, typFrom);
-//        adminService.TyphoonAnalyzed();
-        log.info(String.valueOf(HttpStatus));
-
-//        String StatusMessage = StatusEnum.of(HttpStatus).getCode();
-//        log.info(StatusMessage);
-    }
-    //< 문제 -> xml형식으로 출력해서 발생한 문제 JSON방식으로 출력하면 해결되는 문제임,
 
 }
