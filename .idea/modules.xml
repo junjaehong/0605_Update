@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/barrier_.main.iml" filepath="$PROJECT_DIR$/.idea/modules/barrier_.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.DevOOPS.barrier_.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.DevOOPS.barrier_.main.iml" />
     </modules>
   </component>
 </project>
