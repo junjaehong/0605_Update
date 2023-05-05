@@ -27,13 +27,14 @@ public class AdminService {
     @Autowired
     AdminMapper mapper;
 
-    @Value("${api.key}")
+//    @Value("${api.key}")
     private String ServiceKey;
 
 
     public void createAdmin(dto dt) {
         mapper.createAdmin(dt);
     }
+
     public void deleteAdmin(String adminId) {
         dt.getAdminId().equals(adminId);
         mapper.deleteAdmin(adminId);
@@ -59,7 +60,7 @@ public class AdminService {
             System.out.println("Response Code : " + urlConn.getResponseCode());
 
             BufferedReader bf;
-            if(urlConn.getResponseCode() >= 200 && urlConn.getResponseCode() <= 300) {
+            if (urlConn.getResponseCode() >= 200 && urlConn.getResponseCode() <= 300) {
                 bf = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
             } else {
                 bf = new BufferedReader(new InputStreamReader(urlConn.getErrorStream()));
@@ -77,10 +78,10 @@ public class AdminService {
             //Unexpected character (<) at position 0. Parsing Error 해결해야 함.
             //오류(HttpStatus) 뜨면 오류 안내 페이지로
 
-                int stnId = (int) tmp.get("stnId");
-                String title = (String) tmp.get("title");
-                String tmFc = (String) tmp.get("tmFc");
-                int tmSeq = (int) tmp.get("tmSeq");
+//            int stnId = (int) tmp.get("stnId");
+//            String title = (String) tmp.get("title");
+//            String tmFc = (String) tmp.get("tmFc");
+//            int tmSeq = (int) tmp.get("tmSeq");
 
             /*
             {"response":{"header":{"resultCode":"00","resultMsg":"NORMAL_SERVICE"},
@@ -94,34 +95,34 @@ public class AdminService {
             //도메인을 출력하면 위의 형식과 똑같음.
 
 
-
         } catch (Exception e) {
             log.info(e.toString());
             // printstackTrace 필요 없음, 로그(Warning, Error)
             // 출력해야 함. 테스트 코드 작성 해서 exception마다 처리해야 함.
         }
-    return HttpStatus;
+        return HttpStatus;
     }
 
     public void TyphoonAnalyzed() {
         int TyphoonAnalyzed = 0; //태풍 주의보 : 1, 태풍 특보 : 2, 특보 구문 분석 후 숫자 코드 추가할 예정.
 
-        for(int j=0; j<infoArr.size(); j++) {
-            JSONObject tmp = (JSONObject) infoArr.get(j);
-            String title = (String) tmp.get("title");
-            String word = null;
-
-            if(title.contains("태풍주의보")) {
-                TyphoonAnalyzed = 1;
-                log.info("태풍주의보");
-            }
-            if(title.contains("태풍특보")) {
-                TyphoonAnalyzed = 2;
-                log.info("태풍특보");
-            }
-            else {
-                log.info("태풍이 발생하지 않았습니다.");
-            }
-
-
-
+//        for (int j = 0; j < infoArr.size(); j++) {
+//            JSONObject tmp = (JSONObject) infoArr.get(j);
+//            String title = (String) tmp.get("title");
+//            String word = null;
+//
+//            if (title.contains("태풍주의보")) {
+//                TyphoonAnalyzed = 1;
+//                log.info("태풍주의보");
+//            }
+//            if (title.contains("태풍특보")) {
+//                TyphoonAnalyzed = 2;
+//                log.info("태풍특보");
+//            } else {
+//                log.info("태풍이 발생하지 않았습니다.");
+//            }
+//
+//
+//        }
+    }
+}
