@@ -56,6 +56,22 @@ cmake-build-*/
 # IntelliJ
 out/
 
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+/src/main/resources/.DS_Store
+/src/main/resources/*
+.DS_Store
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
@@ -195,4 +211,5 @@ gradle-app.setting
 
 application.properties
 .DS_Store
+**/src/main/resources/*
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,intellij,gradle
