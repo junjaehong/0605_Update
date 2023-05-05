@@ -2,22 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.DevOOPS.barrier.Mapper.TypListMapper">
+<mapper namespace="com.DevOOPS.barrier.Mapper.PastTypMapper">
 
-<!--    <select id="selectTyplist" parameterType="com.DevOOPS.barrier.DTO.TypListdto">-->
-<!--        SELECT * FROM typ_list WHERE idx = #{idx}-->
-<!--    </select>-->
-
-    <select id="getTypList" parameterType="com.DevOOPS.barrier.DTO.TypListdto" resultType="com.DevOOPS.barrier.DTO.TypListdto">
-        SELECT *
-        FROM typ_list
-        WHERE idx = #{idx}
-    </select>
-
-    <select id="getPastTyps" parameterType="java.time.LocalDateTime" resultType="com.DevOOPS.barrier.DTO.PastTypdto">
-        SELECT typ_date, after_time, typ_name, power, typ_size
-        FROM past_typ
-        WHERE typ_date = #{typ_date}
+    <select id="" parameterType="com.DevOOPS.barrier.DTO.TypListdto">
+        SELECT * FROM typ_list WHERE idx = #{idx}
     </select>
 
 </mapper>
