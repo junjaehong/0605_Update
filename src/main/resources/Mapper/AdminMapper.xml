@@ -11,10 +11,6 @@
     <delete id="deleteAdmin" parameterType="string">
         DELETE FROM admin WHERE admin_id = #{adminId}
     </delete>
-    <insert id="ReportAPICall" parameterType="com.DevOOPS.barrier.DTO.ReportAPIdto">
-        INSERT INTO TyphoonAPI(idx, stnId, title, tmFc, tmSeq)
-        VALUES(#{idx}, #{stnId}, #{title}, #{tmFc}, #{tmSeq})
-    </insert>
 
 
 
