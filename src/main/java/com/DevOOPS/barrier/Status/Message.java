@@ -8,7 +8,6 @@ public class Message {
     private StatusEnum status;
     private String message;
     private Object data;
-    private int time;
 
     public Message() {
         this.status = StatusEnum.BAD_REQUEST;
@@ -22,10 +21,10 @@ public class Message {
         this.message = message;
 
     }
-    public Message(StatusEnum status, String message, Object data, int time) {
-        this.status = status;
-        this.data = data;
-        this.message = message;
-        this.time = time;
-    }
+//    public Message(StatusEnum status, String message, Object data, int time) {
+//        this.status = status;
+//        this.data = data;
+//        this.message = message;
+//        this.time = time;
+//    }
 }

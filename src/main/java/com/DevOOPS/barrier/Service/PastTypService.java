@@ -5,7 +5,10 @@ import com.DevOOPS.barrier.DTO.*;
 import com.DevOOPS.barrier.Mapper.PastTypMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,9 +34,9 @@ public class PastTypService {
         log.info((pastTypMapper.getTypDanger(typ_date).toString()));
         return pastTypMapper.getTypDanger(typ_date);
     }
-
     public List<IoTDangerdto> getIotDanger(LocalDateTime typ_date){
         log.info((pastTypMapper.getIotDanger(typ_date).toString()));
         return pastTypMapper.getIotDanger(typ_date);
     }
+
 }
